@@ -3,7 +3,15 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - BasicWall
+  - OneWayWall
+  - VerticalSlidingWall
+  - MovingPlatform
+  - JumpingPlatform
+  - Level
+  - DeathPlatform
+  - HorizontalPropeller
   layers:
   - Default
   - TransparentFX
