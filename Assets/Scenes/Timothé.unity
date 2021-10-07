@@ -4535,7 +4535,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 1668954153288047255, guid: 3b9f3d6ec7d23bb4cbecab16443faf2b, type: 3}
-  firstSpawnPoint: {fileID: 1204944574}
+  firstSpawnPoint: {fileID: 1037241229}
 --- !u!4 &1108687001
 Transform:
   m_ObjectHideFlags: 0
