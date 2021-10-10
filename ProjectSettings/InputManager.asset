@@ -162,7 +162,7 @@ InputManager:
     sensitivity: 1
     snap: 0
     invert: 0
-    type: 1
+    type: 2
     axis: 6
     joyNum: 0
   - serializedVersion: 3
@@ -187,8 +187,8 @@ InputManager:
     descriptiveNegativeName: 
     negativeButton: s
     positiveButton: z
-    altNegativeButton: up
-    altPositiveButton: down
+    altNegativeButton: down
+    altPositiveButton: up
     gravity: 1000
     dead: 0.1
     sensitivity: 1000

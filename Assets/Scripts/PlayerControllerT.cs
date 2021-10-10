@@ -60,6 +60,7 @@ public class PlayerControllerT : MonoBehaviour
     private bool againstRightWall = false;
     private bool againstRoof = false;
     private bool grounded = false;                  /* grounded is true when the player is actually on the floor */
+    private bool jumping = false;
     private float currentGravity = 0f;
     private float currentMaxHorizontalSpeed = 0f;
     private float baseAccelerationSpeed;
@@ -101,8 +102,8 @@ public class PlayerControllerT : MonoBehaviour
 
         horizontal = Input.GetAxisRaw("Horizontal");
         vertical = Input.GetAxisRaw("Vertical");
-        bool jumping = Input.GetButton("Jump");
         bool sprinting = Input.GetButton("Sprint");
+        if (Input.GetButtonDown("Jump")) jumping = true;
         /* bool dashing = Input.GetButton("Dash"); */
 
         // DEFINITION DE L ETAT //
@@ -184,6 +185,7 @@ public class PlayerControllerT : MonoBehaviour
             currentHorizontalFriction = horizontalGroundFriction;
             currentVerticalFriction = 0f;
             canDoubleJump = false;
+            jumping = false;
             if (horizontal == 0) currentVelocityX *= landingSlowdownFactor;
         }
         if (!grounded && wasGrounded && !jumping) /* Falling from a platform */
