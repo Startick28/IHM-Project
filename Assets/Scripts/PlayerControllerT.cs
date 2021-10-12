@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlayerControllerT : MonoBehaviour
 {
+    [SerializeField] private Transform spriteTransform;
     [SerializeField] private Transform[] leftCasts;
     [SerializeField] private Transform[] rightCasts;
     [SerializeField] private Transform[] topCasts;
@@ -102,6 +103,10 @@ public class PlayerControllerT : MonoBehaviour
 
         horizontal = Input.GetAxisRaw("Horizontal");
         vertical = Input.GetAxisRaw("Vertical");
+
+        /* horizontal = Input.GetAxis("Horizontal");
+        vertical = Input.GetAxis("Vertical");
+        Debug.Log(horizontal); */
         bool sprinting = Input.GetButton("Sprint");
         if (Input.GetButtonDown("Jump")) jumping = true;
         /* bool dashing = Input.GetButton("Dash"); */
@@ -285,6 +290,8 @@ public class PlayerControllerT : MonoBehaviour
         }
         if (currentPlayerState == SpecialState.DASHING) currentVelocityY = Mathf.Max(currentVelocityY, 0); /* Cannot fall during dash */
 
+        if (grounded) currentVelocityY = 0f; /* Not clipping through walls guarantee */
+
         if (Input.GetButtonDown("Jump") && (againstLeftWall || leftWallJumpCoyoteTimer >= 0) && !grounded) /* Left Wall Jump */
         {
             currentGravity = jumpGravity;
@@ -319,6 +326,16 @@ public class PlayerControllerT : MonoBehaviour
         }
 
         transform.Translate(currentVelocityX*Time.deltaTime, currentVelocityY*Time.deltaTime + 0.5f*currentGravity*Time.deltaTime*Time.deltaTime, 0);
+
+
+
+        // Animations
+
+        float tmp = Mathf.Abs(currentVelocityY) / 20f;
+
+        if (currentVelocityY >= 0 && currentPlayerState != SpecialState.DASHING) spriteTransform.localScale = new Vector3( Mathf.Lerp(0.9f,1f, tmp* tmp), Mathf.Lerp(1.15f,1f, tmp), 1f);
+        if (grounded || againstLeftWall || againstRightWall) spriteTransform.localScale = new Vector3(1f, 1f, 1f); 
+
     }
 
 
