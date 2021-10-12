@@ -104,12 +104,8 @@ public class PlayerControllerT : MonoBehaviour
         horizontal = Input.GetAxisRaw("Horizontal");
         vertical = Input.GetAxisRaw("Vertical");
 
-        /* horizontal = Input.GetAxis("Horizontal");
-        vertical = Input.GetAxis("Vertical");
-        Debug.Log(horizontal); */
         bool sprinting = Input.GetButton("Sprint");
         if (Input.GetButtonDown("Jump")) jumping = true;
-        /* bool dashing = Input.GetButton("Dash"); */
 
         // DEFINITION DE L ETAT //
 
@@ -334,7 +330,7 @@ public class PlayerControllerT : MonoBehaviour
         float tmp = Mathf.Abs(currentVelocityY) / 20f;
 
         if (currentVelocityY >= 0 && currentPlayerState != SpecialState.DASHING) spriteTransform.localScale = new Vector3( Mathf.Lerp(0.9f,1f, tmp* tmp), Mathf.Lerp(1.15f,1f, tmp), 1f);
-        if (grounded || againstLeftWall || againstRightWall) spriteTransform.localScale = new Vector3(1f, 1f, 1f); 
+        if (grounded || againstLeftWall || againstRightWall || currentPlayerState == SpecialState.DASHING) spriteTransform.localScale = new Vector3(1f, 1f, 1f); 
 
     }
 
