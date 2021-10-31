@@ -68,11 +68,17 @@ public class UIManager : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape) && currentActiveMenu.gameObject.activeInHierarchy == false)
+        if (Input.GetButtonDown("Cancel") && currentActiveMenu.gameObject.activeInHierarchy == false)
         {
             GameManager.instance.isGamePaused = true;
             currentActiveMenu = pauseMenu;
             currentActiveMenu.SetActive(true);
+            EventSystem.current.SetSelectedGameObject(firstPauseMenuButton);
+        }   
+        else if (Input.GetButtonDown("Cancel") && currentActiveMenu.gameObject.activeInHierarchy == true)
+        {
+            GameManager.instance.isGamePaused = false;
+            currentActiveMenu.SetActive(false);
             EventSystem.current.SetSelectedGameObject(firstPauseMenuButton);
         }    
     }

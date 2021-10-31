@@ -19,7 +19,7 @@ public class PlatformsSnapping : MonoBehaviour
         else
         {
             posX = Mathf.Round(transform.localPosition.x * 4f) / 4f;
-            posY = Mathf.Round(transform.localPosition.y * 2f) / 2f;
+            posY = Mathf.Round(transform.localPosition.y * 4f) / 4f;
         }
         transform.localPosition = new Vector3(posX, posY, 0f);
 
@@ -36,6 +36,6 @@ public class PlatformsSnapping : MonoBehaviour
             scaleY = Mathf.Round(transform.localScale.y * 2f) / 2f;
         }
         
-        transform.localScale = new Vector3(scaleX, scaleY, 1f);
+        transform.localScale = new Vector3(scaleX, scaleY, 2f);
     }
 }

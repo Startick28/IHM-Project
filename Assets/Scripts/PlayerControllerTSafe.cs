@@ -125,15 +125,19 @@ public class PlayerControllerTSafe : MonoBehaviour
 
         // DEFINITION DE L ETAT //
 
+        if (horizontal == 1) facingRight = true;
+        else if (horizontal == -1) facingRight = false;
+
         lefthorizontalControlLock -= Time.deltaTime;
         righthorizontalControlLock -= Time.deltaTime;
         if (lefthorizontalControlLock > 0) horizontal = Mathf.Max(0f,horizontal);
         if (righthorizontalControlLock > 0) horizontal = Mathf.Min(0f,horizontal);
 
-        //bool wasFacingRight = facingRight;
-        if (horizontal == 1) facingRight = true;
-        else if (horizontal == -1) facingRight = false;
-        //if (wasFacingRight != facingRight) propellerLimitBreak = false;
+        onPropeller = false;
+        bool wasGrounded = grounded;
+        grounded = isGrounded();
+
+        
 
         if (currentVelocityY < 0) /* Falling case */
         {
@@ -192,9 +196,7 @@ public class PlayerControllerTSafe : MonoBehaviour
         }
 
         /* Collisions au sol */
-        onPropeller = false;
-        bool wasGrounded = grounded;
-        grounded = isGrounded();
+        
         if (grounded && !wasGrounded)
         {
             currentGravity = 0f;    /* Arrêt du joueur et de la gravité à l'atterrissage */
@@ -354,7 +356,7 @@ public class PlayerControllerTSafe : MonoBehaviour
         float tmp = Mathf.Abs(currentVelocityY) / 20f;
 
         if (currentVelocityY >= 0 && currentPlayerState != SpecialState.DASHING) spriteTransform.localScale = new Vector3( Mathf.Lerp(0.9f,1f, tmp* tmp), Mathf.Lerp(1.15f,1f, tmp), 1f);
-        if (grounded || againstLeftWall || againstRightWall || currentPlayerState == SpecialState.DASHING) spriteTransform.localScale = new Vector3(1f, 1f, 1f); 
+        if (grounded || againstLeftWall || againstRightWall || currentPlayerState == SpecialState.DASHING) spriteTransform.localScale = new Vector3(1.02f, 1f, 1f); 
 
     }
 
@@ -363,52 +365,56 @@ public class PlayerControllerTSafe : MonoBehaviour
         float fixedX = transform.position.x;
         float fixedY = transform.position.y;
 
+
         int layerMask = 1 << 6;
         foreach (Transform leftCast in leftCasts)
         {
             RaycastHit hit;
-            if (Physics.Raycast(leftCast.position, Vector3.left, out hit, 0.5f, layerMask))
+            if (Physics.Raycast(leftCast.position, Vector3.left, out hit, 0.51f, layerMask))
             {
+                
                 if (currentVelocityX <= 0)
                 {
-                    float tmp = hit.transform.position.x + 0.5005f;
-                    if (tmp > fixedX) fixedX = tmp;
+                    float tmp = hit.point.x + 0.5f;
+                    if (tmp > fixedX +0.02f) fixedX = tmp;
                 }
             }
         }
         foreach (Transform rightCast in rightCasts)
         {
             RaycastHit hit;
-            if (Physics.Raycast(rightCast.position, Vector3.left, out hit, 0.5f, layerMask))
+            if (Physics.Raycast(rightCast.position, Vector3.right, out hit, 0.51f, layerMask))
             {
                 if (currentVelocityX >= 0)
                 {
-                    float tmp = hit.transform.position.x - 0.5005f;
-                    if (tmp < fixedX) fixedX = tmp;
+                    float tmp = hit.point.x - 0.5f;
+                    if (tmp < fixedX -0.02f) fixedX = tmp;
                 }
             }
         }
         foreach (Transform topCast in topCasts)
         {
             RaycastHit hit;
-            if (Physics.Raycast(topCast.position, Vector3.left, out hit, 0.5f, layerMask))
+            if (Physics.Raycast(topCast.position, Vector3.up, out hit, 0.51f, layerMask))
             {
                 if (currentVelocityY >= 0)
                 {
-                    float tmp = hit.transform.position.y - 0.5005f;
-                    if (tmp < fixedY) fixedY = tmp;
+                    float tmp = hit.point.y - 0.5f;
+                    if (tmp < fixedY +0.02f) fixedY = tmp;
                 }
             }
         }
         foreach (Transform downCast in downCasts)
         {
             RaycastHit hit;
-            if (Physics.Raycast(downCast.position, Vector3.left, out hit, 0.5f, layerMask))
+            if (Physics.Raycast(downCast.position, Vector3.down, out hit, 0.51f, layerMask))
             {
                 if (currentVelocityY <= 0)
                 {
-                    float tmp = hit.transform.position.y + 0.5005f;
-                    if (tmp > fixedY) fixedY = tmp;
+                    float tmp = hit.point.y + 0.5f;
+                    if (tmp > fixedY -0.02f){
+                        fixedY = tmp;
+                    } 
                 }
             }
         }
@@ -421,9 +427,9 @@ public class PlayerControllerTSafe : MonoBehaviour
         foreach (Transform leftCast in leftCasts)
         {
             RaycastHit hit;
-            if (Physics.Raycast(leftCast.position, Vector3.left, out hit, 0.5f, layerMask))
+            if (Physics.Raycast(leftCast.position, Vector3.left, out hit, 0.51f, layerMask))
             {
-                Debug.DrawRay(leftCast.position, Vector3.left, Color.yellow);
+                //Debug.DrawRay(leftCast.position, Vector3.left, Color.yellow);
                 if (hit.collider.CompareTag("DeathPlatform"))
                 {
                     Die();
@@ -440,9 +446,9 @@ public class PlayerControllerTSafe : MonoBehaviour
         foreach (Transform rightCast in rightCasts)
         {
             RaycastHit hit;
-            if (Physics.Raycast(rightCast.position, Vector3.right, out hit, 0.5f, layerMask))
+            if (Physics.Raycast(rightCast.position, Vector3.right, out hit, 0.51f, layerMask))
             {
-                Debug.DrawRay(rightCast.position, Vector3.right, Color.yellow);
+                //Debug.DrawRay(rightCast.position, Vector3.right, Color.yellow);
                 if (hit.collider.CompareTag("DeathPlatform"))
                 {
                     Die();
@@ -459,9 +465,9 @@ public class PlayerControllerTSafe : MonoBehaviour
         foreach (Transform topCast in topCasts)
         {
             RaycastHit hit;
-            if (Physics.Raycast(topCast.position, Vector3.up, out hit, 0.5f, layerMask))
+            if (Physics.Raycast(topCast.position, Vector3.up, out hit, 0.51f, layerMask))
             {
-                Debug.DrawRay(topCast.position, Vector3.up, Color.yellow);
+                //Debug.DrawRay(topCast.position, Vector3.up, Color.yellow);
                 if (hit.collider.CompareTag("DeathPlatform"))
                 {
                     Die();
@@ -478,9 +484,9 @@ public class PlayerControllerTSafe : MonoBehaviour
         foreach (Transform downCast in downCasts)
         {
             RaycastHit hit;
-            if (Physics.Raycast(downCast.position, Vector3.down, out hit, 0.5f, layerMask))
+            if (Physics.Raycast(downCast.position, Vector3.down, out hit, 0.51f, layerMask))
             {
-                Debug.DrawRay(downCast.position, Vector3.down, Color.yellow);
+                //Debug.DrawRay(downCast.position, Vector3.down, Color.yellow);
                 if (hit.collider.CompareTag("DeathPlatform"))
                 {
                     Die();
