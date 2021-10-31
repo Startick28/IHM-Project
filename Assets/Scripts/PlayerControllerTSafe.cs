@@ -86,6 +86,8 @@ public class PlayerControllerTSafe : MonoBehaviour
 
     private Vector3 currentSpawnPoint = new Vector3(-11.5f, 0f, 0f);
 
+    // Variables for animations
+    private bool isSpawning = true;
 
     //VFX PARAMETERS
     private MilkShake.Shaker cameraToShake;
@@ -104,6 +106,7 @@ public class PlayerControllerTSafe : MonoBehaviour
         groundDecelerationSpeed = baseMovementSpeed / groundDecelerationDuration;
         airDecelerationSpeed = baseMovementSpeed / airDecelerationDuration;
         currentVerticalFriction = 0f;
+        gameObject.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
     }
 
     void Update()
@@ -114,6 +117,20 @@ public class PlayerControllerTSafe : MonoBehaviour
 
     void UpdatePlayer()
     {
+        // Animations
+
+        // Spawn
+        if (isSpawning)
+        {
+            if (gameObject.transform.localScale.x < 1f)
+            {
+                gameObject.transform.localScale += new Vector3(0.05f, 0.05f, 0.05f);
+            }
+            else
+            {
+                isSpawning = false;
+            }
+        }
 
         // RECUPERATION DES INPUTS //
 
@@ -121,6 +138,9 @@ public class PlayerControllerTSafe : MonoBehaviour
         vertical = Input.GetAxisRaw("Vertical");
 
         bool sprinting = Input.GetButton("Sprint");
+        if (sprinting)
+            ParticleManager.instance.startSprintParticle();
+
         if (Input.GetButtonDown("Jump")) jumping = true;
 
         // DEFINITION DE L ETAT //
@@ -199,6 +219,7 @@ public class PlayerControllerTSafe : MonoBehaviour
         
         if (grounded && !wasGrounded)
         {
+            ParticleManager.instance.startCollisionParticle();
             currentGravity = 0f;    /* Arrêt du joueur et de la gravité à l'atterrissage */
             currentVelocityY = 0f; 
             currentHorizontalFriction = horizontalGroundFriction;
@@ -223,6 +244,7 @@ public class PlayerControllerTSafe : MonoBehaviour
         if (grounded && currentPlayerState == SpecialState.STANDARD) canDash = true;
         if (Input.GetButtonDown("Dash") && !(facingRight && againstRightWall) && !(!facingRight && againstLeftWall) && canDash)
         {
+            ParticleManager.instance.startDashParticle();
             dashTimer = dashDuration;
             currentPlayerState = SpecialState.DASHING;
             canDash = false;
@@ -566,8 +588,13 @@ public class PlayerControllerTSafe : MonoBehaviour
 
     public void Die()
     {
+        // Activation des particules de mort
+        ParticleManager.instance.startDeathParticle();
         transform.position = currentSpawnPoint;
         grounded = false;
+
+        isSpawning = true;
+        gameObject.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
         currentVelocityX = 0f;
         currentVelocityY = 0f;
         currentGravity = baseGravity;
