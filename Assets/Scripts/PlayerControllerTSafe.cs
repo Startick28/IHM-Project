@@ -191,6 +191,10 @@ public class PlayerControllerTSafe : MonoBehaviour
         againstLeftWall = isAgainstLeftWall();
         if (againstLeftWall)
         {
+            if (!wasAgainstLeftWall)
+            {
+                ParticleManager.instance.startLeftCollisionParticle();
+            }
             currentVelocityX = Mathf.Max(currentVelocityX, 0f);
             leftWallJumpCoyoteTimer = coyoteTimeWallJump;
             propellerLimitBreak = false;
@@ -201,6 +205,10 @@ public class PlayerControllerTSafe : MonoBehaviour
         againstRightWall = isAgainstRightWall();
         if (againstRightWall)
         {
+            if (!wasAgainstRightWall)
+            {
+                ParticleManager.instance.startRightCollisionParticle();
+            }
             currentVelocityX = Mathf.Min(currentVelocityX, 0f);
             rightWallJumpCoyoteTimer = coyoteTimeWallJump;
             propellerLimitBreak = false;
@@ -219,7 +227,7 @@ public class PlayerControllerTSafe : MonoBehaviour
         
         if (grounded && !wasGrounded)
         {
-            ParticleManager.instance.startCollisionParticle();
+            ParticleManager.instance.startGroundCollisionParticle();
             currentGravity = 0f;    /* Arrêt du joueur et de la gravité à l'atterrissage */
             currentVelocityY = 0f; 
             currentHorizontalFriction = horizontalGroundFriction;
