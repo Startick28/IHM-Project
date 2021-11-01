@@ -10,9 +10,7 @@ public class MovingPlatform : MonoBehaviour
     [SerializeField] private float waitingTime;
 
     int currentCheckpoint= 0;
-    float currentVelocityX;
-    float currentVelocityY;
-    Vector3 lastPosition;
+
 
     void Start()
     {
@@ -29,15 +27,12 @@ public class MovingPlatform : MonoBehaviour
             else endPosition = listOfCheckpoints[0].position;
             
             float duration = Vector3.Distance(startPosition,endPosition) / speed;
-            for (float time = 0; time < duration; time+=Time.deltaTime)
+            for (float time = 0; time < duration; time+=Time.fixedDeltaTime)
             {
-                lastPosition = transform.position;
                 float t = time/duration;
                 t= t*t*(3f-2f*t);
                 transform.position = Vector3.Lerp(startPosition, endPosition, t);
-                currentVelocityX = (transform.position.x - lastPosition.x) / Time.deltaTime;
-                currentVelocityY = (transform.position.y - lastPosition.y) / Time.deltaTime;
-                yield return null;
+                yield return new WaitForFixedUpdate();
             }            
             transform.position = endPosition;
 
@@ -50,12 +45,19 @@ public class MovingPlatform : MonoBehaviour
         }
     }
 
-    public float GetVelocityX()
+    void OnTriggerEnter(Collider col)
     {
-        return currentVelocityX;
+        if (col.CompareTag("Player"))
+        {
+            col.transform.SetParent(transform);
+        }
     }
-    public float GetVelocityY()
+    void OnTriggerExit(Collider col)
     {
-        return currentVelocityY;
+        if (col.CompareTag("Player"))
+        {
+            col.transform.SetParent(null);
+        }
     }
+
 }
