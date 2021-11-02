@@ -306,6 +306,7 @@ MonoBehaviour:
   propellerAcceleration: 30
   deathShakePreset: {fileID: 11400000, guid: c707cd62e14fa8049b97e99ff7f6bed8, type: 2}
   dashShakePreset: {fileID: 11400000, guid: e3dfd3ab683e90e499279b6e1b7b0bf2, type: 2}
+  landShakePreset: {fileID: 11400000, guid: ccd57fc5ca9c51045a0ee116cba47c0f, type: 2}
 --- !u!54 &-5472769660165209893
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -472,7 +473,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1668954153653123690}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.49, y: 0, z: 0}
+  m_LocalPosition: {x: -0.49, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1668954153561877566}
@@ -502,7 +503,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1668954153768729070}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.49, y: 0, z: 0}
+  m_LocalPosition: {x: 0.49, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1668954153561877566}
@@ -562,7 +563,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1668954154011379261}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1668954153561877566}

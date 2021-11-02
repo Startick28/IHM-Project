@@ -93,6 +93,7 @@ public class PlayerControllerTSafe : MonoBehaviour
     private MilkShake.Shaker cameraToShake;
     [SerializeField] private MilkShake.ShakePreset deathShakePreset;
     [SerializeField] private MilkShake.ShakePreset dashShakePreset;
+    [SerializeField] private MilkShake.ShakePreset landShakePreset;
 
     //SFX PARAMETERS
     void Start()
@@ -194,6 +195,7 @@ public class PlayerControllerTSafe : MonoBehaviour
             if (!wasAgainstLeftWall)
             {
                 ParticleManager.instance.startLeftCollisionParticle();
+                SoundManager.PlaySound(SoundManager.Sound.Land,0.4f);
             }
             currentVelocityX = Mathf.Max(currentVelocityX, 0f);
             leftWallJumpCoyoteTimer = coyoteTimeWallJump;
@@ -208,6 +210,7 @@ public class PlayerControllerTSafe : MonoBehaviour
             if (!wasAgainstRightWall)
             {
                 ParticleManager.instance.startRightCollisionParticle();
+                SoundManager.PlaySound(SoundManager.Sound.Land,0.4f);
             }
             currentVelocityX = Mathf.Min(currentVelocityX, 0f);
             rightWallJumpCoyoteTimer = coyoteTimeWallJump;
@@ -228,6 +231,10 @@ public class PlayerControllerTSafe : MonoBehaviour
         if (grounded && !wasGrounded)
         {
             ParticleManager.instance.startGroundCollisionParticle();
+            float volumeLerp = Mathf.Abs(currentVelocityY)/60f;
+            SoundManager.PlaySound(SoundManager.Sound.Land,Mathf.Lerp(0.3f,3f,volumeLerp * volumeLerp));
+            if (Mathf.Abs(currentVelocityY)>40f) cameraToShake.Shake(landShakePreset);
+
             currentGravity = 0f;    /* Arrêt du joueur et de la gravité à l'atterrissage */
             currentVelocityY = 0f; 
             currentHorizontalFriction = horizontalGroundFriction;
@@ -273,6 +280,7 @@ public class PlayerControllerTSafe : MonoBehaviour
         
         if (onPropeller) 
         {
+            SoundManager.PlaySound(SoundManager.Sound.Propel);
             currentVelocityX = (facingRight ? 1 : -1) * propellerAcceleration;
             currentMaxHorizontalSpeed = Mathf.Abs(currentVelocityX);
             if (facingRight) lefthorizontalControlLock = 0.05f;  /* Cannot change direction on propeller */
@@ -346,7 +354,7 @@ public class PlayerControllerTSafe : MonoBehaviour
             currentVelocityX = baseMovementSpeed;
             currentHorizontalFriction = horizontalAirFriction;
             lefthorizontalControlLock = lockAfterWallJump;
-            SoundManager.PlaySound(SoundManager.Sound.Jump);
+            SoundManager.PlaySound(SoundManager.Sound.Jump,0.8f);
         }
         if (Input.GetButtonDown("Jump") && (againstRightWall || rightWallJumpCoyoteTimer >= 0) && !grounded) /* Right Wall Jump */
         {
@@ -355,7 +363,7 @@ public class PlayerControllerTSafe : MonoBehaviour
             currentVelocityX = -baseMovementSpeed;
             currentHorizontalFriction = horizontalAirFriction;
             righthorizontalControlLock = lockAfterWallJump;
-            SoundManager.PlaySound(SoundManager.Sound.Jump);
+            SoundManager.PlaySound(SoundManager.Sound.Jump,0.8f);
         }
         if (Input.GetButtonDown("Jump") && !grounded && canDoubleJump && !againstLeftWall && !againstRightWall && coyoteTimer < 0) /* Double Jump */
         {
@@ -363,7 +371,7 @@ public class PlayerControllerTSafe : MonoBehaviour
             currentVelocityY = jumpInputSpeed;
             currentHorizontalFriction = horizontalAirFriction;
             canDoubleJump = false;
-            SoundManager.PlaySound(SoundManager.Sound.DoubleJump);
+            SoundManager.PlaySound(SoundManager.Sound.DoubleJump,0.8f);
         }
 
         if (Input.GetButtonDown("Jump") && (grounded || coyoteTimer >= 0)) /* Jump */
@@ -373,7 +381,7 @@ public class PlayerControllerTSafe : MonoBehaviour
             currentHorizontalFriction = horizontalAirFriction;
             canDoubleJump = true;
             coyoteTimer = 0;
-            SoundManager.PlaySound(SoundManager.Sound.Jump);
+            SoundManager.PlaySound(SoundManager.Sound.Jump,0.8f);
         }
 
         oldPosition = transform.position;
@@ -437,10 +445,11 @@ public class PlayerControllerTSafe : MonoBehaviour
         foreach (Transform downCast in downCasts)
         {
             RaycastHit hit;
-            if (Physics.Raycast(downCast.position, Vector3.down, out hit, 0.51f, layerMask))
+            if (Physics.Raycast(downCast.position, Vector3.down, out hit, 2f, layerMask))
             {
                 if (currentVelocityY <= 0)
                 {
+                    Debug.Log(hit.point.y);
                     float tmp = hit.point.y + 0.5f;
                     if (tmp > fixedY -0.02f){
                         fixedY = tmp;
@@ -514,7 +523,7 @@ public class PlayerControllerTSafe : MonoBehaviour
         foreach (Transform downCast in downCasts)
         {
             RaycastHit hit;
-            if (Physics.Raycast(downCast.position, Vector3.down, out hit, 0.51f, layerMask))
+            if (Physics.Raycast(downCast.position, Vector3.down, out hit, 1.01f, layerMask))
             {
                 //Debug.DrawRay(downCast.position, Vector3.down, Color.yellow);
                 if (hit.collider.CompareTag("DeathPlatform"))

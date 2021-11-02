@@ -114,7 +114,7 @@ public class UIManager : MonoBehaviour
         switch (menuToGo)
         {
             case MenuType.MainMenu:
-                SceneManager.LoadScene(0);
+                if (SceneManager.GetActiveScene().buildIndex != 1) SceneManager.LoadScene(1);
                 currentActiveMenu = mainMenu;
                 mainMenu.SetActive(true);
                 EventSystem.current.SetSelectedGameObject(firstMainMenuButton);
@@ -158,7 +158,7 @@ public class UIManager : MonoBehaviour
     public void Play()
     {
         currentActiveMenu.SetActive(false);
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene(2);
         if (GameManager.instance) GameManager.instance.isGamePaused = false;
     }
 
@@ -195,13 +195,13 @@ public class UIManager : MonoBehaviour
 
     public void SetMusicSliderValue()
     {
-        SoundAssets.instance.changeVolume();
+        SoundAssets.instance.changeVolume(musicVolumeSlider.value, sfxVolumeSlider.value);
         musicVolumeText.text = musicVolumeSlider.value.ToString();
     }
 
     public void SetSfxSliderValue()
     {
-        SoundAssets.instance.changeVolume();
+        SoundAssets.instance.changeVolume(musicVolumeSlider.value, sfxVolumeSlider.value);
         sfxVolumeText.text = sfxVolumeSlider.value.ToString();
     }
 

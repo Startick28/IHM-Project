@@ -10,19 +10,20 @@ public class SoundManager : MonoBehaviour
         Dash,
         Death,
         Spawn,
-        Sprint,
-        Slide,
-        UI
+        Propel,
+        Land,
+        UI,
+        Test
     }
 
     public static Dictionary<Sound,float> soundTimerDictionary;
     private static GameObject oneShotGameObject;
     private static AudioSource oneShotAudioSource;
 
-    public static void Initialize() {
+    public void Start() {
 
         soundTimerDictionary = new Dictionary<Sound, float>();
-        soundTimerDictionary[Sound.Sprint] = 0f;
+        soundTimerDictionary[Sound.Propel] = 1f;
     }
 
 
@@ -58,11 +59,11 @@ public class SoundManager : MonoBehaviour
         switch (sound){
             default:
                 return true;
-            case Sound.Sprint:
+            case Sound.Propel:
                 if (soundTimerDictionary.ContainsKey(sound)) {
                     float lastTimePlayed = soundTimerDictionary[sound];
-                    float playerMoveTimerMax = .05f;
-                    if (lastTimePlayed + playerMoveTimerMax < Time.time)
+                    float propelSoundTimerMax = .5f;
+                    if (lastTimePlayed + propelSoundTimerMax < Time.time)
                     {
                         soundTimerDictionary[sound] = Time.time;
                         return true;

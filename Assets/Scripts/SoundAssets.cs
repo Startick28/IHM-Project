@@ -47,12 +47,14 @@ public class SoundAssets : MonoBehaviour
         musicSource.loop = true;
         musicSource2.loop = true;
         sfxSource.loop = true;
-        musicSource.volume = 0.7f;
-        musicSource2.volume = 0.7f;
-        musicVolumeModifier = 0.5f;
+        musicSource.volume = 0.35f;
+        musicSource2.volume = 0.35f;
+        musicVolumeModifier = 0.35f;
         sfxVolumeModifier = 0.5f;
         sfxSource.volume = 0.8f;
         
+        
+        PlayMusicWithFade(mainMusic,3f);
     }
 
     public void Update()
@@ -60,13 +62,13 @@ public class SoundAssets : MonoBehaviour
         
     }
 
-    public void changeVolume()
+    public void changeVolume(float musicValue, float sfxValue)
     {
-        musicVolumeModifier = musicSlide.value/10f;
-        sfxVolumeModifier = sfxSlide.value/10f;
+        musicVolumeModifier = musicValue/10f;
+        sfxVolumeModifier = sfxValue/10f;
         
-        musicSource.volume = 0.7f * musicVolumeModifier;
-        musicSource2.volume = 0.7f * musicVolumeModifier;
+        musicSource.volume = 0.35f * musicVolumeModifier;
+        musicSource2.volume = 0.35f * musicVolumeModifier;
         sfxSource.volume = 0.8f * sfxVolumeModifier;
     }
 
@@ -80,7 +82,7 @@ public class SoundAssets : MonoBehaviour
 
     public void PlayMusicWithFade(AudioClip newClip, float transitionTime = 1.0f)
     {
-        AudioSource activeSource = (firstSourcePlaying) ? musicSource : musicSource2;
+        AudioSource activeSource = musicSource;
         if (!activeSource.isPlaying)
         {
             StartCoroutine(UpdateMusicWithFade(activeSource,newClip,transitionTime));
@@ -132,7 +134,7 @@ public class SoundAssets : MonoBehaviour
     private IEnumerator UpdateMusicWithFade(AudioSource activeSource, AudioClip newClip, float transitionTime)
     {
         if (!activeSource.isPlaying)
-            activeSource.PlayDelayed(20);
+            activeSource.Play();
 
         float t = 0.0f;
 
@@ -143,7 +145,7 @@ public class SoundAssets : MonoBehaviour
         }
         activeSource.Stop();
         activeSource.clip = newClip;
-        activeSource.PlayDelayed(20);
+        activeSource.Play();
 
         for (t= 0; t< transitionTime; t+=Time.deltaTime)
         {
